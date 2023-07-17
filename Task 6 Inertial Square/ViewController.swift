@@ -15,31 +15,32 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate{
         myView.layer.cornerRadius = 10
         return myView
     }()
-
+    
     var animator: UIDynamicAnimator!
     var animatorItem: UIDynamicItemBehavior!
     var collision: UICollisionBehavior!
     var recognizer: UITapGestureRecognizer!
     var snap: UISnapBehavior!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
         view.addSubview(mySquare)
         setupMySquare(mySquare)
-        recognizer = UITapGestureRecognizer(target: self, action: #selector(handlePan))
+        recognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap))
         view.addGestureRecognizer(recognizer)
         recognizer.delegate = self
         animator = UIDynamicAnimator(referenceView: view)
         animatorItem = UIDynamicItemBehavior(items: [mySquare])
-
     }
     
-    @objc func handlePan(recognizer: UITapGestureRecognizer) {
+    @objc func handleTap(recognizer: UITapGestureRecognizer) {
         collision = UICollisionBehavior(items: [mySquare])
-        let insets = UIEdgeInsets(top: view.safeAreaInsets.top, left: view.safeAreaInsets.left, bottom: view.safeAreaInsets.bottom, right: view.safeAreaInsets.right)
+        let insets = UIEdgeInsets(top: view.safeAreaInsets.top,
+                                  left: view.safeAreaInsets.left,
+                                  bottom: view.safeAreaInsets.bottom,
+                                  right: view.safeAreaInsets.right)
         collision.setTranslatesReferenceBoundsIntoBoundary(with: insets)
-
+        
         animator.addBehavior(collision)
         if (snap != nil) {
             animator.removeBehavior(snap)
