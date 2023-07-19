@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UIGestureRecognizerDelegate{
+class ViewController: UIViewController{
     
     lazy var mySquare: UIView = {
         var myView = UIView()
@@ -20,7 +20,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate{
     var animatorItem: UIDynamicItemBehavior!
     var collision: UICollisionBehavior!
     var recognizer: UITapGestureRecognizer!
-    var snap: UISnapBehavior!
+    var snapBehavior: UISnapBehavior!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,7 +28,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate{
         setupMySquare(mySquare)
         recognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap))
         view.addGestureRecognizer(recognizer)
-        recognizer.delegate = self
         animator = UIDynamicAnimator(referenceView: view)
         animatorItem = UIDynamicItemBehavior(items: [mySquare])
     }
@@ -42,18 +41,20 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate{
         collision.setTranslatesReferenceBoundsIntoBoundary(with: insets)
         
         animator.addBehavior(collision)
-        if (snap != nil) {
-            animator.removeBehavior(snap)
+//        if (snapBehavior != nil) {
+//            animator.removeBehavior(snapBehavior)
+//        }
+        if let snapBehavior = self.snapBehavior {
+            animator.removeBehavior(snapBehavior)
         }
-        
-        snap = UISnapBehavior(item: mySquare, snapTo: recognizer.location(in: self.view))
-        snap.damping = 0.8
+        snapBehavior = UISnapBehavior(item: mySquare, snapTo: recognizer.location(in: self.view))
+        snapBehavior.damping = 0.8
         animatorItem.angularResistance = 2.0
         animatorItem.addAngularVelocity(1.0, for: mySquare)
         animatorItem.linearVelocity(for: mySquare)
         animatorItem.resistance = 10.0
         animator.addBehavior(animatorItem)
-        animator.addBehavior(snap)
+        animator.addBehavior(snapBehavior)
     }
     
     func setupMySquare(_ myView: UIView){
